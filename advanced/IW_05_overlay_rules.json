@@ -3,6 +3,14 @@
   "purpose": "Reference fragment for provider full Xray configs. Not a standalone INCY routing profile.",
   "routing": {
     "domainStrategy": "IPIfNonMatch",
+    "priority": [
+      "provider explicit blocks",
+      "DNS/DoT/NTP direct",
+      "IW 02 DirectSites/DirectIp",
+      "provider explicit direct rules",
+      "UDP/443 block",
+      "provider balancers and final fallback"
+    ],
     "rules": [
       {
         "type": "field",
@@ -21,12 +29,6 @@
         "network": "udp",
         "port": "123",
         "outboundTag": "direct"
-      },
-      {
-        "type": "field",
-        "network": "udp",
-        "port": "443",
-        "outboundTag": "block"
       },
       {
         "type": "field",
@@ -49,6 +51,12 @@
           "fe80::/10"
         ],
         "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "network": "udp",
+        "port": "443",
+        "outboundTag": "block"
       }
     ]
   }
