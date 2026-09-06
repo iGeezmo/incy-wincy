@@ -20,33 +20,35 @@
 
 Для большинства сценариев рекомендуется **IW 02 Work+ Complete**.
 
-Он отправляет выбранные рабочие и международные сервисы через `PROXY`, а локальные сервисы, банки, госсервисы, российские маркетплейсы и домашнюю сеть оставляет в `DIRECT`.
-
 <p align="center">
   <img src="assets/routing-flow.svg" alt="Схема маршрутизации IW 02 Work+ Complete" width="100%">
 </p>
 
-### Самый простой способ — QR
-
-Отсканируйте QR для **IW 02 Work+ Complete**:
+### Вариант 1 — QR
 
 <p align="center">
   <img src="assets/qr/IW_02_WorkPlus_Complete.png" alt="QR IW 02 Work+ Complete" width="280">
 </p>
 
-QR содержит INCY Autorouting deep link: приложение получает профиль из GitHub и сохраняет источник для последующих обновлений.
+QR содержит готовый INCY Autorouting deeplink.
 
-Все QR-коды: [docs/QR.md](docs/QR.md)
+### Вариант 2 — вставить ссылку вручную в INCY
 
-### Если добавляете вручную
-
-Используйте этот URL **внутри INCY как источник Autorouting**, а не как обычную ссылку для открытия в браузере:
+В экран **«Импорт профиля» → «URL или Base64 профиля»** вставляйте именно эту полную ссылку:
 
 ```text
-https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus_Complete.json
+incy://autorouting/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus_Complete.json
 ```
 
-После добавления активируйте **IW 02 Work+ Complete** и полностью переподключите туннель.
+Не вставляйте туда только `https://raw.githubusercontent.com/...json`: это адрес файла, а не полноценная INCY-команда импорта.
+
+Если Autorouting не срабатывает, используйте одноразовый fallback:
+
+```text
+incy://routing/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus_Complete.json
+```
+
+После добавления полностью переподключите туннель.
 
 Подробная инструкция: [docs/SETUP_RU.md](docs/SETUP_RU.md)
 
@@ -63,67 +65,49 @@ https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus
 | IW 03 Full Proxy | Диагностический режим | `PROXY` |
 | IW 04 Clean Proxy | Full Proxy + базовая фильтрация рекламных доменов | `PROXY` |
 
-## Все профили
+## Готовые INCY deeplink-ссылки
 
 ### IW 01 Daily
 
-Источник Autorouting:
-
 ```text
-https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_01_Daily.json
+incy://autorouting/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_01_Daily.json
 ```
-
-QR: [открыть](assets/qr/IW_01_Daily.png)
 
 ### IW 02 Work+ Complete — рекомендуется
 
-Источник Autorouting:
+```text
+incy://autorouting/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus_Complete.json
+```
+
+### IW 03 Full Proxy
+
+```text
+incy://autorouting/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_03_Full_Proxy.json
+```
+
+### IW 04 Clean Proxy
+
+```text
+incy://autorouting/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_04_Clean_Proxy.json
+```
+
+Все QR-коды: [docs/QR.md](docs/QR.md)
+
+## Технический источник JSON
+
+Если нужен именно URL файла профиля для интеграций/автообновления, основной JSON находится здесь:
 
 ```text
 https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus_Complete.json
 ```
 
-QR: [открыть](assets/qr/IW_02_WorkPlus_Complete.png)
-
-### IW 03 Full Proxy
-
-Источник Autorouting:
-
-```text
-https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_03_Full_Proxy.json
-```
-
-QR: [открыть](assets/qr/IW_03_Full_Proxy.png)
-
-### IW 04 Clean Proxy
-
-Источник Autorouting:
-
-```text
-https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_04_Clean_Proxy.json
-```
-
-QR: [открыть](assets/qr/IW_04_Clean_Proxy.png)
+Но для ручного импорта через экран INCY используйте deeplink выше.
 
 ## Что маршрутизирует Work+
 
-Через **PROXY** направляются выбранные категории рабочих сервисов:
+Через **PROXY** направляются выбранные категории рабочих сервисов: AI/LLM, разработка, SaaS, collaboration, дизайн и отдельные media/social endpoints.
 
-- AI и LLM;
-- разработка и developer tooling;
-- SaaS и collaboration;
-- дизайн и creative tools;
-- отдельные media/social endpoints.
-
-Через **DIRECT** направляются категории, для которых важен локальный маршрут:
-
-- Яндекс и связанные сервисы;
-- банки и платёжная инфраструктура;
-- госсервисы;
-- российские маркетплейсы;
-- карты, транспорт и доставка;
-- операторы связи;
-- локальные/private IP-сети.
+Через **DIRECT** направляются категории, для которых важен локальный маршрут: Яндекс, банки, госсервисы, российские маркетплейсы, карты/транспорт/доставка, операторы связи и локальные/private IP-сети.
 
 Полный технический список находится в [`IW_02_WorkPlus_Complete.json`](routing/IW_02_WorkPlus_Complete.json).
 
@@ -148,16 +132,6 @@ docs/        установка, QR и диагностика
 modules/     AdBlock / Privacy / исключения
 ```
 
-## Обновления профилей
-
-Для постоянного использования рекомендуется **Autorouting**: INCY хранит URL источника и может получать обновления профиля из этого репозитория.
-
-Основной источник:
-
-```text
-https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus_Complete.json
-```
-
 ## Issues и изменения правил
 
 Если конкретный сервис работает неправильно, создайте Issue. Для мобильных приложений желательно приложить только домены/IP из INCY Tunnel Logs, относящиеся к проблеме. Не публикуйте cookies, токены, содержимое запросов и персональные данные.
@@ -169,5 +143,3 @@ incy-wincy — инструмент управления сетевой марш
 ## Лицензия
 
 Собственные материалы incy-wincy распространяются по **Apache License 2.0**. См. [LICENSE](LICENSE) и [NOTICE](NOTICE).
-
-Сторонние правила, модули, код и данные не перелицензируются автоматически: для них сохраняются исходные лицензии и требования attribution.
