@@ -1,6 +1,6 @@
 # IW 05 Work+ Full Config Overlay
 
-`IW 05` предназначен для подписок INCY, которые возвращают **полный Xray-конфиг** с собственными `outbounds`, `balancers`, `observatory` и routing-правилами.
+`IW 05` предназначен для подписок INCY, которые возвращают **полный Xray-конфиг** с собственными `outbounds`, `balancers`, `observatory`/`burstObservatory` и routing-правилами.
 
 Это не обычный routing-profile и не замена `IW 02` для стандартных подписок.
 
@@ -8,88 +8,97 @@
 
 Обычный профиль INCY умеет задавать доменные/IP-маршруты, но не даёт выразить часть транспортных правил, которые нужны в сложном provider full config.
 
-По логам типичного full-config можно увидеть собственные outbounds вроде `eutcp-*`, `eugrpc-*`, `ustcp-*`, `usgrpc-*`, специальные `gemini`/`bank`, а также `observatory` и provider fallback/baseline.
+Типичный full-config может содержать собственные outbounds вроде `eutcp-*`, `eugrpc-*`, `ustcp-*`, `usgrpc-*`, отдельные `gemini`/`bank`, balancers и provider fallback.
 
-`IW 05` не удаляет эту архитектуру. Он добавляет поверх неё несколько high-priority правил и оставляет provider routing после них.
+`IW 05` не удаляет эту архитектуру. Он добавляет контролируемый слой правил поверх неё.
 
-## Что добавляет overlay
+## Приоритет правил
 
-В начало `routing.rules` добавляются:
+Патчер формирует `routing.rules` в таком порядке:
 
-1. DNS `UDP/53` → `direct`;
-2. DNS/DoT `TCP/53,853` → `direct`;
-3. NTP `UDP/123` → `direct`;
-4. QUIC `UDP/443` → `block`;
+1. исходные provider explicit BLOCK-правила, например блокировка BitTorrent;
+2. DNS `UDP/53` → `direct`;
+3. DNS/DoT `TCP/53,853` → `direct`;
+4. NTP `UDP/123` → `direct`;
 5. `DirectSites` из `IW 02 Work+ Complete` → `direct`;
-6. `DirectIp` из `IW 02 Work+ Complete` → `direct`.
+6. `DirectIp` из `IW 02 Work+ Complete` → `direct`;
+7. исходные provider explicit DIRECT-правила, например push endpoints;
+8. QUIC `UDP/443` → `block`;
+9. остальные исходные provider rules и balancers в их исходном относительном порядке.
 
-Затем идут исходные provider rules без изменения порядка.
+`domainStrategy` устанавливается в `IPIfNonMatch`.
 
-`domainStrategy` принудительно устанавливается в `IPIfNonMatch`.
+Такой порядок важен: локальный/банковский трафик, которому разрешён DIRECT, не блокируется общим правилом QUIC. Блокировка UDP/443 применяется только после явных DIRECT-исключений.
 
 ## Почему UDP/443 блокируется
 
-Некоторые VLESS/XTLS outbounds в full-config не принимают QUIC-трафик и в логах дают `XTLS rejected UDP/443 traffic`.
+Некоторые VLESS/XTLS Vision outbounds не принимают QUIC-трафик и дают в Xray-логах `XTLS rejected UDP/443 traffic`.
 
-Блокировка QUIC заставляет приложения использовать TCP/TLS fallback вместо многократных неуспешных попыток проксировать UDP/443 через несовместимый outbound.
+В этом случае блокировка QUIC заставляет приложение быстрее перейти на TCP/TLS/HTTP2 вместо повторных неуспешных попыток отправить UDP/443 через несовместимый outbound.
 
-Если ваш provider корректно поддерживает UDP/443, это правило можно удалить из сгенерированного файла.
+Если provider полноценно поддерживает UDP/443, это правило можно удалить.
 
 ## Как собрать IW 05
 
-Нужен **экспорт полного provider Xray JSON**. В нём должны присутствовать как минимум поля `inbounds` и `outbounds`.
-
-Запуск:
+Нужен **экспорт полного provider Xray JSON**. В нём должны присутствовать как минимум `inbounds` и `outbounds`.
 
 ```bash
 python3 tools/patch_full_config.py provider.json \
   -o IW_05_WorkPlus_FullConfig.json
 ```
 
-Скрипт:
+Патчер:
 
 - не меняет VLESS/Trojan/etc credentials;
-- не меняет provider outbounds;
-- не удаляет balancers;
-- не удаляет observatory/burstObservatory;
-- не переставляет исходные provider routing rules между собой;
-- при необходимости добавляет стандартные `direct` и `block` outbounds;
-- добавляет IW-правила перед provider rules.
+- не меняет адреса и transport-настройки provider outbounds;
+- сохраняет balancers;
+- сохраняет `observatory` / `burstObservatory`;
+- сохраняет специальные provider routes вроде `gemini_balancer`;
+- добавляет `direct`/`block` outbounds только если их нет;
+- использует актуальные `DirectSites` и `DirectIp` из `IW 02`.
+
+## Важный пример: provider bank route
+
+Некоторые full configs сами отправляют Яндекс, VK, маркетплейсы и банковские домены в специальный `bank_balancer`.
+
+Поскольку `IW 05` помещает `IW 02 DirectSites` выше таких правил, выбранные локальные домены получают **настоящий `direct`**, а не provider `bank_balancer`.
+
+Это намеренное отличие Work+ от исходной provider-конфигурации.
 
 ## Импорт в INCY
 
 Полный Xray JSON определяется INCY по наличию одновременно `inbounds` и `outbounds` и импортируется как отдельная серверная конфигурация, а не как routing-profile.
 
-Для локального файла используйте обычный импорт конфигурации INCY. Для URL, который возвращает готовый full config, применяется общий механизм добавления конфигураций/подписок, а не `incy://routing/...`.
-
-**Не используйте** для `IW 05` ссылки вида:
+Не используйте для `IW 05` ссылки вида:
 
 ```text
 incy://routing/onadd/...
 ```
 
-Они предназначены для обычных routing profiles и не заменяют импорт full Xray config.
+Они предназначены для обычных routing profiles.
 
-## Почему в репозитории пока нет универсального QR для IW 05
+## Почему нет универсального публичного QR
 
-Full config содержит реальные provider outbounds, адреса серверов и credentials. Один публичный статический `IW 05` не может корректно заменить их и не должен публиковать чужие секреты.
+Full config содержит адреса серверов, UUID/credentials, Reality keys и другие данные конкретной подписки. Их нельзя публиковать в открытом репозитории.
 
-Поэтому публичная часть проекта содержит безопасный overlay-патчер. Готовый `IW 05` создаётся локально из конкретного provider config.
+Поэтому репозиторий содержит только безопасный патчер и reference rules. Готовый `IW 05` создаётся локально из конкретного provider config.
 
 ## Проверка после импорта
 
 В Tunnel Logs ожидается:
 
 ```text
-UDP/53  -> taking detour [direct]
-TCP/853 -> taking detour [direct]
-UDP/123 -> taking detour [direct]
-RU/Yandex/VK -> taking detour [direct]
-UDP/443 -> taking detour [block]
+UDP/53           -> taking detour [direct]
+TCP/853          -> taking detour [direct]
+UDP/123          -> taking detour [direct]
+Yandex/VK/banks  -> taking detour [direct]
+UDP/443 (other)  -> taking detour [block]
+Gemini TCP/443   -> provider gemini_balancer
+Other traffic    -> provider EUTCP/fallback
 ```
-
-Рабочий зарубежный трафик после этих правил должен доходить до исходного provider routing/balancer.
 
 ## Ограничения
 
-Overlay не исправляет неисправные серверы. Ошибки вида `connection refused`, `tls: internal error`, `x509 ... not <expected hostname>` требуют исправления или исключения соответствующего provider endpoint.
+Overlay не исправляет неисправные серверы. Ошибки `connection refused`, `tls: internal error`, `x509 ... not <expected hostname>` требуют исправления или исключения соответствующего provider endpoint.
+
+Также provider может обновить подписку и заменить full config. После такого обновления overlay нужно применить заново.
