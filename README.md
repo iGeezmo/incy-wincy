@@ -64,6 +64,7 @@ incy://routing/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/r
 | IW 01 Daily | Proxy-first профиль с прямыми исключениями | `PROXY` |
 | IW 03 Full Proxy | Диагностический режим | `PROXY` |
 | IW 04 Clean Proxy | Full Proxy + базовая фильтрация рекламных доменов | `PROXY` |
+| **IW 05 Work+ Full Config Overlay** | Advanced: для provider full-config с собственными balancers/observatory | сохраняет provider fallback |
 
 ## Готовые INCY deeplink-ссылки
 
@@ -92,6 +93,29 @@ incy://autorouting/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/ma
 ```
 
 Все QR-коды: [docs/QR.md](docs/QR.md)
+
+## IW 05 — для сложных provider Full Xray Config
+
+Некоторые подписки передают INCY полный Xray-конфиг с собственными `outbounds`, `balancers`, `observatory` и routing-правилами. В таких конфигурациях обычный `IW 02` может контролировать не весь маршрут.
+
+Для этого добавлен **IW 05 Work+ Full Config Overlay**. Он не заменяет provider config, а патчит экспортированный full Xray JSON и добавляет перед provider rules:
+
+- DNS `UDP/53` → `DIRECT`;
+- DNS/DoT `TCP/53,853` → `DIRECT`;
+- NTP `UDP/123` → `DIRECT`;
+- QUIC `UDP/443` → `BLOCK` для TCP/TLS fallback;
+- DIRECT domains/IP из `IW 02` → `DIRECT`;
+- затем сохраняет исходный provider routing/balancers.
+
+Сборка:
+
+```bash
+python3 tools/patch_full_config.py provider.json -o IW_05_WorkPlus_FullConfig.json
+```
+
+Подробно: [docs/ADVANCED_FULL_CONFIG_RU.md](docs/ADVANCED_FULL_CONFIG_RU.md)
+
+> Для IW 05 намеренно нет публичного универсального QR: готовый full config содержит реальные provider outbounds и credentials. Публиковать или подменять их общим статическим файлом небезопасно и технически неверно.
 
 ## Технический источник JSON
 
@@ -127,6 +151,8 @@ https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus
 
 ```text
 routing/     профили INCY и Autorouting deep links
+advanced/    reference fragments для full Xray configs
+tools/       локальные генераторы/патчеры full config
 assets/      hero, схемы и QR-коды
 docs/        установка, QR и диагностика
 modules/     AdBlock / Privacy / исключения
