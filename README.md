@@ -64,7 +64,7 @@ incy://routing/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/r
 | IW 01 Daily | Proxy-first профиль с прямыми исключениями | `PROXY` |
 | IW 03 Full Proxy | Диагностический режим | `PROXY` |
 | IW 04 Clean Proxy | Full Proxy + базовая фильтрация рекламных доменов | `PROXY` |
-| **IW 05 Work+ Full Config Overlay** | Advanced: для provider full-config с собственными balancers/observatory | сохраняет provider fallback |
+| **IW 05 Work+ Full Config** | Advanced: provider Full Xray Config с собственными balancers/observatory | сохраняет provider fallback |
 
 ## Готовые INCY deeplink-ссылки
 
@@ -94,28 +94,39 @@ incy://autorouting/onadd/https://raw.githubusercontent.com/iGeezmo/incy-wincy/ma
 
 Все QR-коды: [docs/QR.md](docs/QR.md)
 
-## IW 05 — для сложных provider Full Xray Config
+## IW 05 — Dynamic Full Config Transformer
 
 Некоторые подписки передают INCY полный Xray-конфиг с собственными `outbounds`, `balancers`, `observatory` и routing-правилами. В таких конфигурациях обычный `IW 02` может контролировать не весь маршрут.
 
-Для этого добавлен **IW 05 Work+ Full Config Overlay**. Он не заменяет provider config, а патчит экспортированный full Xray JSON и добавляет перед provider rules:
+Для этого добавлен **IW 05 Work+ Full Config** в двух вариантах:
+
+1. **Dynamic Transformer — рекомендуется.** При каждом запросе получает свежую provider subscription, накладывает IW-правила и отдаёт готовый Full Xray Config.
+2. **Локальный Python-патчер** — fallback для разового snapshot.
+
+Dynamic Transformer решает проблему устаревших статических конфигов: если provider меняет серверы, Reality keys, balancers или transports, следующий запрос получает уже обновлённую конфигурацию.
+
+Он добавляет поверх provider config:
 
 - DNS `UDP/53` → `DIRECT`;
 - DNS/DoT `TCP/53,853` → `DIRECT`;
 - NTP `UDP/123` → `DIRECT`;
-- QUIC `UDP/443` → `BLOCK` для TCP/TLS fallback;
 - DIRECT domains/IP из `IW 02` → `DIRECT`;
-- затем сохраняет исходный provider routing/balancers.
+- оставшийся QUIC `UDP/443` → `BLOCK` для TCP/TLS fallback;
+- затем сохраняет исходные provider routing/balancers/fallback.
 
-Сборка:
+Код Worker: [`worker/`](worker/)
+
+Инструкция по приватному deploy: [`worker/README_RU.md`](worker/README_RU.md)
+
+Полное описание IW 05: [docs/ADVANCED_FULL_CONFIG_RU.md](docs/ADVANCED_FULL_CONFIG_RU.md)
+
+Локальный fallback:
 
 ```bash
 python3 tools/patch_full_config.py provider.json -o IW_05_WorkPlus_FullConfig.json
 ```
 
-Подробно: [docs/ADVANCED_FULL_CONFIG_RU.md](docs/ADVANCED_FULL_CONFIG_RU.md)
-
-> Для IW 05 намеренно нет публичного универсального QR: готовый full config содержит реальные provider outbounds и credentials. Публиковать или подменять их общим статическим файлом небезопасно и технически неверно.
+> Для IW 05 намеренно нет публичного универсального QR: готовый full config и персональный transformer URL содержат или дают доступ к provider credentials. Такие URL должны оставаться приватными.
 
 ## Технический источник JSON
 
@@ -153,6 +164,7 @@ https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus
 routing/     профили INCY и Autorouting deep links
 advanced/    reference fragments для full Xray configs
 tools/       локальные генераторы/патчеры full config
+worker/      dynamic subscription transformer для IW 05
 assets/      hero, схемы и QR-коды
 docs/        установка, QR и диагностика
 modules/     AdBlock / Privacy / исключения
