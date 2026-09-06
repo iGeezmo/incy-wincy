@@ -1,0 +1,7 @@
+name = "incy-wincy-transformer"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[vars]
+IW_PROFILE_URL = "https://raw.githubusercontent.com/iGeezmo/incy-wincy/main/routing/IW_02_WorkPlus_Complete.json"
