@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">Сравнение профилей incy-wincy</title>
+  <desc id="desc">Визуальное сравнение четырёх профилей IW</desc>
+  <rect width="1200" height="560" rx="28" fill="#0b1020"/>
+  <text x="70" y="70" fill="#f8fafc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="800">Какой профиль выбрать</text>
+  <text x="70" y="108" fill="#94a3b8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">Четыре режима — от выборочной маршрутизации до полного прокси.</text>
+
+  <g font-family="Inter,Segoe UI,Arial,sans-serif">
+    <rect x="70" y="150" width="250" height="320" rx="22" fill="#111827" stroke="#334155"/>
+    <text x="95" y="194" fill="#e2e8f0" font-size="23" font-weight="800">IW 01 Daily</text>
+    <text x="95" y="228" fill="#94a3b8" font-size="16">Proxy-first</text>
+    <rect x="95" y="262" width="200" height="22" rx="11" fill="#172554"/>
+    <rect x="95" y="262" width="150" height="22" rx="11" fill="#60a5fa"/>
+    <text x="95" y="318" fill="#cbd5e1" font-size="16">Большая часть → PROXY</text>
+    <text x="95" y="348" fill="#cbd5e1" font-size="16">Локальные исключения → DIRECT</text>
+    <text x="95" y="418" fill="#64748b" font-size="15">Для тех, кто предпочитает</text>
+    <text x="95" y="440" fill="#64748b" font-size="15">прокси по умолчанию.</text>
+
+    <rect x="340" y="135" width="250" height="350" rx="22" fill="#111d35" stroke="#3b82f6" stroke-width="3"/>
+    <rect x="365" y="160" width="110" height="30" rx="15" fill="#1d4ed8"/>
+    <text x="420" y="181" text-anchor="middle" fill="#dbeafe" font-size="13" font-weight="800">РЕКОМЕНДУЕТСЯ</text>
+    <text x="365" y="226" fill="#f8fafc" font-size="23" font-weight="800">IW 02 Work+</text>
+    <text x="365" y="260" fill="#bfdbfe" font-size="16">Selective routing</text>
+    <rect x="365" y="294" width="200" height="22" rx="11" fill="#052e16"/>
+    <rect x="365" y="294" width="92" height="22" rx="11" fill="#60a5fa"/>
+    <text x="365" y="350" fill="#dbeafe" font-size="16">Рабочее → PROXY</text>
+    <text x="365" y="380" fill="#bbf7d0" font-size="16">Локальное → DIRECT</text>
+    <text x="365" y="438" fill="#93c5fd" font-size="15">Лучший баланс для</text>
+    <text x="365" y="460" fill="#93c5fd" font-size="15">повседневного использования.</text>
+
+    <rect x="610" y="150" width="250" height="320" rx="22" fill="#111827" stroke="#334155"/>
+    <text x="635" y="194" fill="#e2e8f0" font-size="23" font-weight="800">IW 03 Full Proxy</text>
+    <text x="635" y="228" fill="#94a3b8" font-size="16">Diagnostic</text>
+    <rect x="635" y="262" width="200" height="22" rx="11" fill="#60a5fa"/>
+    <text x="635" y="318" fill="#cbd5e1" font-size="16">Практически всё → PROXY</text>
+    <text x="635" y="348" fill="#cbd5e1" font-size="16">Минимум исключений</text>
+    <text x="635" y="418" fill="#64748b" font-size="15">Для диагностики</text>
+    <text x="635" y="440" fill="#64748b" font-size="15">пропущенных endpoints.</text>
+
+    <rect x="880" y="150" width="250" height="320" rx="22" fill="#111827" stroke="#334155"/>
+    <text x="905" y="194" fill="#e2e8f0" font-size="23" font-weight="800">IW 04 Clean Proxy</text>
+    <text x="905" y="228" fill="#94a3b8" font-size="16">Full Proxy + filtering</text>
+    <rect x="905" y="262" width="200" height="22" rx="11" fill="#60a5fa"/>
+    <rect x="905" y="294" width="200" height="22" rx="11" fill="#7c2d12"/>
+    <text x="905" y="350" fill="#cbd5e1" font-size="16">Весь трафик → PROXY</text>
+    <text x="905" y="380" fill="#fed7aa" font-size="16">+ ad-domain filtering</text>
+    <text x="905" y="438" fill="#64748b" font-size="15">Не лучший выбор для</text>
+    <text x="905" y="460" fill="#64748b" font-size="15">маркетинговой аналитики.</text>
+  </g>
+  <text x="70" y="525" fill="#64748b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15">Схема иллюстративная: конкретное число правил и маршрутов меняется по мере обновлений проекта.</text>
+</svg>
