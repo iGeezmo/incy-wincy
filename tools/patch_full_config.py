@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Apply the IW 05 compatibility overlay to an INCY/Xray full config.
 
-The script preserves provider outbounds, balancers, observatories, and existing
-routing rules. It only prepends high-priority DIRECT/BLOCK rules derived from
-IW 02 plus transport rules that normal INCY routing profiles cannot express.
+The script preserves provider outbounds, balancers, observatories, and provider
+routing intent while inserting high-priority DIRECT/BLOCK rules that normal
+INCY routing profiles cannot express.
 
 Usage:
     python3 tools/patch_full_config.py provider.json -o IW_05_WorkPlus_FullConfig.json
@@ -46,6 +46,14 @@ def _dedupe_rules(rules: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return result
 
 
+def _is_explicit_direct(rule: dict[str, Any]) -> bool:
+    return rule.get("outboundTag") == "direct"
+
+
+def _is_explicit_block(rule: dict[str, Any]) -> bool:
+    return rule.get("outboundTag") == "block"
+
+
 def apply_overlay(config: dict[str, Any], profile: dict[str, Any]) -> dict[str, Any]:
     if "inbounds" not in config or "outbounds" not in config:
         raise ValueError("Input is not an INCY full Xray config: both inbounds and outbounds are required")
@@ -55,13 +63,28 @@ def apply_overlay(config: dict[str, Any], profile: dict[str, Any]) -> dict[str, 
 
     routing = config.setdefault("routing", {})
     routing["domainStrategy"] = "IPIfNonMatch"
-    provider_rules = routing.setdefault("rules", [])
+    provider_rules = [r for r in routing.setdefault("rules", []) if isinstance(r, dict)]
 
     direct_sites = list(profile.get("DirectSites", []))
     direct_ip = list(profile.get("DirectIp", []))
 
-    # High-priority rules. Xray evaluates field rules top-to-bottom.
-    overlay_rules: list[dict[str, Any]] = [
+    provider_block_rules = [r for r in provider_rules if _is_explicit_block(r)]
+    provider_direct_rules = [r for r in provider_rules if _is_explicit_direct(r)]
+    provider_other_rules = [
+        r for r in provider_rules
+        if not _is_explicit_block(r) and not _is_explicit_direct(r)
+    ]
+
+    # Priority model:
+    # 1) Preserve provider hard blocks such as bittorrent.
+    # 2) Force infrastructure traffic direct.
+    # 3) Apply IW 02 local/direct domains and IPs.
+    # 4) Preserve provider explicit direct rules (e.g. push services).
+    # 5) Block QUIC only after all explicit DIRECT exceptions.
+    # 6) Keep provider balancers/fallback rules in their original relative order.
+    overlay_rules: list[dict[str, Any]] = []
+    overlay_rules.extend(provider_block_rules)
+    overlay_rules.extend([
         {
             "type": "field",
             "network": "udp",
@@ -80,13 +103,7 @@ def apply_overlay(config: dict[str, Any], profile: dict[str, Any]) -> dict[str, 
             "port": "123",
             "outboundTag": "direct",
         },
-        {
-            "type": "field",
-            "network": "udp",
-            "port": "443",
-            "outboundTag": "block",
-        },
-    ]
+    ])
 
     if direct_sites:
         overlay_rules.append({
@@ -102,8 +119,16 @@ def apply_overlay(config: dict[str, Any], profile: dict[str, Any]) -> dict[str, 
             "outboundTag": "direct",
         })
 
-    # Keep provider routing intact after our compatibility rules.
-    routing["rules"] = _dedupe_rules(overlay_rules + provider_rules)
+    overlay_rules.extend(provider_direct_rules)
+    overlay_rules.append({
+        "type": "field",
+        "network": "udp",
+        "port": "443",
+        "outboundTag": "block",
+    })
+    overlay_rules.extend(provider_other_rules)
+
+    routing["rules"] = _dedupe_rules(overlay_rules)
 
     meta = config.setdefault("meta", {})
     if isinstance(meta, dict):
