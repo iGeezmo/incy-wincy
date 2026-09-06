@@ -1,51 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
-  <title id="title">Сравнение профилей incy-wincy</title>
-  <desc id="desc">Визуальное сравнение четырёх профилей IW</desc>
-  <rect width="1200" height="560" rx="28" fill="#0b1020"/>
-  <text x="70" y="70" fill="#f8fafc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="800">Какой профиль выбрать</text>
-  <text x="70" y="108" fill="#94a3b8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">Четыре режима — от выборочной маршрутизации до полного прокси.</text>
-
-  <g font-family="Inter,Segoe UI,Arial,sans-serif">
-    <rect x="70" y="150" width="250" height="320" rx="22" fill="#111827" stroke="#334155"/>
-    <text x="95" y="194" fill="#e2e8f0" font-size="23" font-weight="800">IW 01 Daily</text>
-    <text x="95" y="228" fill="#94a3b8" font-size="16">Proxy-first</text>
-    <rect x="95" y="262" width="200" height="22" rx="11" fill="#172554"/>
-    <rect x="95" y="262" width="150" height="22" rx="11" fill="#60a5fa"/>
-    <text x="95" y="318" fill="#cbd5e1" font-size="16">Большая часть → PROXY</text>
-    <text x="95" y="348" fill="#cbd5e1" font-size="16">Локальные исключения → DIRECT</text>
-    <text x="95" y="418" fill="#64748b" font-size="15">Для тех, кто предпочитает</text>
-    <text x="95" y="440" fill="#64748b" font-size="15">прокси по умолчанию.</text>
-
-    <rect x="340" y="135" width="250" height="350" rx="22" fill="#111d35" stroke="#3b82f6" stroke-width="3"/>
-    <rect x="365" y="160" width="110" height="30" rx="15" fill="#1d4ed8"/>
-    <text x="420" y="181" text-anchor="middle" fill="#dbeafe" font-size="13" font-weight="800">РЕКОМЕНДУЕТСЯ</text>
-    <text x="365" y="226" fill="#f8fafc" font-size="23" font-weight="800">IW 02 Work+</text>
-    <text x="365" y="260" fill="#bfdbfe" font-size="16">Selective routing</text>
-    <rect x="365" y="294" width="200" height="22" rx="11" fill="#052e16"/>
-    <rect x="365" y="294" width="92" height="22" rx="11" fill="#60a5fa"/>
-    <text x="365" y="350" fill="#dbeafe" font-size="16">Рабочее → PROXY</text>
-    <text x="365" y="380" fill="#bbf7d0" font-size="16">Локальное → DIRECT</text>
-    <text x="365" y="438" fill="#93c5fd" font-size="15">Лучший баланс для</text>
-    <text x="365" y="460" fill="#93c5fd" font-size="15">повседневного использования.</text>
-
-    <rect x="610" y="150" width="250" height="320" rx="22" fill="#111827" stroke="#334155"/>
-    <text x="635" y="194" fill="#e2e8f0" font-size="23" font-weight="800">IW 03 Full Proxy</text>
-    <text x="635" y="228" fill="#94a3b8" font-size="16">Diagnostic</text>
-    <rect x="635" y="262" width="200" height="22" rx="11" fill="#60a5fa"/>
-    <text x="635" y="318" fill="#cbd5e1" font-size="16">Практически всё → PROXY</text>
-    <text x="635" y="348" fill="#cbd5e1" font-size="16">Минимум исключений</text>
-    <text x="635" y="418" fill="#64748b" font-size="15">Для диагностики</text>
-    <text x="635" y="440" fill="#64748b" font-size="15">пропущенных endpoints.</text>
-
-    <rect x="880" y="150" width="250" height="320" rx="22" fill="#111827" stroke="#334155"/>
-    <text x="905" y="194" fill="#e2e8f0" font-size="23" font-weight="800">IW 04 Clean Proxy</text>
-    <text x="905" y="228" fill="#94a3b8" font-size="16">Full Proxy + filtering</text>
-    <rect x="905" y="262" width="200" height="22" rx="11" fill="#60a5fa"/>
-    <rect x="905" y="294" width="200" height="22" rx="11" fill="#7c2d12"/>
-    <text x="905" y="350" fill="#cbd5e1" font-size="16">Весь трафик → PROXY</text>
-    <text x="905" y="380" fill="#fed7aa" font-size="16">+ ad-domain filtering</text>
-    <text x="905" y="438" fill="#64748b" font-size="15">Не лучший выбор для</text>
-    <text x="905" y="460" fill="#64748b" font-size="15">маркетинговой аналитики.</text>
-  </g>
-  <text x="70" y="525" fill="#64748b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15">Схема иллюстративная: конкретное число правил и маршрутов меняется по мере обновлений проекта.</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+<title id="title">Сравнение профилей incy-wincy</title><desc id="desc">Сравнение четырёх профилей IW</desc>
+<rect width="1200" height="620" rx="28" fill="#0b1020"/>
+<g font-family="Arial,Helvetica,sans-serif">
+<text x="60" y="65" fill="#f8fafc" font-size="34" font-weight="700">Какой профиль выбрать</text>
+<text x="60" y="100" fill="#94a3b8" font-size="18">Четыре режима маршрутизации для разных сценариев.</text>
+<!-- Daily -->
+<rect x="60" y="140" width="255" height="390" rx="20" fill="#111827" stroke="#334155"/>
+<text x="85" y="185" fill="#e2e8f0" font-size="22" font-weight="700">IW 01 Daily</text><text x="85" y="218" fill="#94a3b8" font-size="16">Proxy-first</text>
+<rect x="85" y="250" width="205" height="18" rx="9" fill="#172554"/><rect x="85" y="250" width="154" height="18" rx="9" fill="#60a5fa"/>
+<text x="85" y="310" fill="#cbd5e1" font-size="15">Большая часть</text><text x="85" y="334" fill="#cbd5e1" font-size="15">→ PROXY</text>
+<text x="85" y="374" fill="#cbd5e1" font-size="15">Локальные исключения</text><text x="85" y="398" fill="#cbd5e1" font-size="15">→ DIRECT</text>
+<text x="85" y="474" fill="#64748b" font-size="14">Прокси по умолчанию,</text><text x="85" y="496" fill="#64748b" font-size="14">локальные исключения.</text>
+<!-- Work -->
+<rect x="335" y="125" width="255" height="420" rx="20" fill="#111d35" stroke="#3b82f6" stroke-width="3"/>
+<rect x="360" y="148" width="126" height="28" rx="14" fill="#1d4ed8"/><text x="423" y="167" text-anchor="middle" fill="#dbeafe" font-size="12" font-weight="700">РЕКОМЕНДУЕТСЯ</text>
+<text x="360" y="215" fill="#f8fafc" font-size="22" font-weight="700">IW 02 Work+</text><text x="360" y="248" fill="#bfdbfe" font-size="16">Selective routing</text>
+<rect x="360" y="280" width="205" height="18" rx="9" fill="#052e16"/><rect x="360" y="280" width="94" height="18" rx="9" fill="#60a5fa"/>
+<text x="360" y="340" fill="#dbeafe" font-size="15">Рабочие сервисы</text><text x="360" y="364" fill="#dbeafe" font-size="15">→ PROXY</text>
+<text x="360" y="404" fill="#bbf7d0" font-size="15">Локальные сервисы</text><text x="360" y="428" fill="#bbf7d0" font-size="15">→ DIRECT</text>
+<text x="360" y="502" fill="#93c5fd" font-size="14">Баланс для ежедневного</text><text x="360" y="524" fill="#93c5fd" font-size="14">использования.</text>
+<!-- Full -->
+<rect x="610" y="140" width="255" height="390" rx="20" fill="#111827" stroke="#334155"/>
+<text x="635" y="185" fill="#e2e8f0" font-size="22" font-weight="700">IW 03 Full Proxy</text><text x="635" y="218" fill="#94a3b8" font-size="16">Diagnostic</text>
+<rect x="635" y="250" width="205" height="18" rx="9" fill="#60a5fa"/>
+<text x="635" y="310" fill="#cbd5e1" font-size="15">Практически всё</text><text x="635" y="334" fill="#cbd5e1" font-size="15">→ PROXY</text>
+<text x="635" y="374" fill="#cbd5e1" font-size="15">Минимум прямых</text><text x="635" y="398" fill="#cbd5e1" font-size="15">исключений</text>
+<text x="635" y="474" fill="#64748b" font-size="14">Для диагностики</text><text x="635" y="496" fill="#64748b" font-size="14">маршрутов и endpoints.</text>
+<!-- Clean -->
+<rect x="885" y="140" width="255" height="390" rx="20" fill="#111827" stroke="#334155"/>
+<text x="910" y="185" fill="#e2e8f0" font-size="21" font-weight="700">IW 04 Clean Proxy</text><text x="910" y="218" fill="#94a3b8" font-size="15">Full Proxy + filtering</text>
+<rect x="910" y="250" width="205" height="18" rx="9" fill="#60a5fa"/><rect x="910" y="280" width="205" height="18" rx="9" fill="#7c2d12"/>
+<text x="910" y="340" fill="#cbd5e1" font-size="15">Трафик → PROXY</text><text x="910" y="374" fill="#fed7aa" font-size="15">+ фильтрация</text><text x="910" y="398" fill="#fed7aa" font-size="15">рекламных доменов</text>
+<text x="910" y="474" fill="#64748b" font-size="14">Для сценариев, где</text><text x="910" y="496" fill="#64748b" font-size="14">нужна фильтрация.</text>
+<text x="60" y="585" fill="#64748b" font-size="14">Схема иллюстративная: состав правил может меняться при обновлениях.</text>
+</g></svg>
